@@ -1,4 +1,3 @@
-# garage door opener
 import network
 import socket
 import time
@@ -8,6 +7,7 @@ from machine import Pin
 import uasyncio as asyncio
 
 led = Pin(15, Pin.OUT)
+#led = Pin(15, Pin.OUT)
 onboard = Pin("LED", Pin.OUT, value=0)
 
 html = """<!DOCTYPE html>
@@ -49,10 +49,11 @@ async def serve_client(reader, writer):
     while await reader.readline() != b"\r\n":
         pass
     
-    request = str(request_line)
-    led_on  = request.find('/light/on')
-    led_off = request.find('/light/off')
+    request       = str(request_line)
+    led_on        = request.find('/light/on')
+    led_off       = request.find('/light/off')
     button_pushed = request.find('/button/pushed')
+    
     print( 'led on  = ' + str(led_on))
     print( 'led off = ' + str(led_off))
     print( 'button_pushed = ' + str(button_pushed))
@@ -90,11 +91,11 @@ async def main():
     print('Setting up webserver...')
     asyncio.create_task(asyncio.start_server(serve_client, "0.0.0.0", 80))
     while True:
-#       onboard.on()
-#        print("heartbeat")
+        onboard.on()
+        print("heartbeat")
         await asyncio.sleep(0.25)
-#       onboard.off()
-#        await asyncio.sleep(5)
+        onboard.off()
+        await asyncio.sleep(1)
         
 try:
     asyncio.run(main())
